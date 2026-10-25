@@ -603,6 +603,45 @@
   margin: 0 auto 1.25rem;
 }
 
+/* About Page Responsive Grids */
+.about-profile-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.about-portfolio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+/* Service Features Grid */
+.service-features-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.service-features-grid li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0;
+}
+
+.service-features-grid svg {
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  color: var(--color-teal);
+}
+
 /* ==========================================================================
    Mobile Responsive Rules (max-width: 768px)
    ========================================================================== */
@@ -622,6 +661,21 @@
     gap: 1.25rem;
   }
 
+  .about-profile-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .about-portfolio-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .service-features-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -639,6 +693,19 @@
   .category-section-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* Wrap category navigation pills on mobile so no horizontal scroll is forced */
+  .category-nav-scroll {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    justify-content: flex-start;
+  }
+
+  .category-pill {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.775rem;
+    white-space: normal;
   }
 
   .service-card {

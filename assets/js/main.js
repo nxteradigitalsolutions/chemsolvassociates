@@ -24,42 +24,67 @@
   const drawerOverlay = document.getElementById('mobile-drawer-overlay');
   const drawerClose = document.getElementById('mobile-drawer-close');
 
-  if (mobileToggle && mobileDrawer && drawerOverlay) {
-    function toggleDrawer(open) {
-      const isOpen = open !== undefined ? open : !mobileDrawer.classList.contains('active');
-      mobileToggle.classList.toggle('active', isOpen);
-      mobileDrawer.classList.toggle('active', isOpen);
-      drawerOverlay.classList.toggle('active', isOpen);
-      document.body.style.overflow = isOpen ? 'hidden' : '';
-      mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    }
-
-    mobileToggle.addEventListener('click', (e) => {
+  let lastToggleTimestamp = 0;
+  function toggleMobileNav(e, forceState) {
+    if (e && typeof e.preventDefault === 'function') {
       e.preventDefault();
-      toggleDrawer();
-    });
-
-    if (drawerClose) {
-      drawerClose.addEventListener('click', (e) => {
-        e.preventDefault();
-        toggleDrawer(false);
-      });
+      e.stopPropagation();
     }
+    const now = Date.now();
+    // Guard against instant double-firing (e.g. inline onclick + click event listener or touch/click pairs)
+    if (now - lastToggleTimestamp < 350 && forceState === undefined) {
+      return;
+    }
+    lastToggleTimestamp = now;
 
-    drawerOverlay.addEventListener('click', () => toggleDrawer(false));
+    const drawer = mobileDrawer || document.getElementById('mobile-drawer');
+    const toggle = mobileToggle || document.getElementById('mobile-toggle');
+    const overlay = drawerOverlay || document.getElementById('mobile-drawer-overlay');
+    if (!drawer || !toggle || !overlay) return;
 
-    // Close when clicking mobile links
+    const isOpen = typeof forceState === 'boolean' ? forceState : !drawer.classList.contains('active');
+    toggle.classList.toggle('active', isOpen);
+    drawer.classList.toggle('active', isOpen);
+    overlay.classList.toggle('active', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  }
+
+  // Expose globally so inline onclick on <button> works immediately
+  window.toggleMobileNav = toggleMobileNav;
+
+  if (mobileToggle) {
+    mobileToggle.addEventListener('click', (e) => toggleMobileNav(e));
+  }
+
+  if (drawerClose) {
+    drawerClose.addEventListener('click', (e) => toggleMobileNav(e, false));
+  }
+
+  if (drawerOverlay) {
+    drawerOverlay.addEventListener('click', (e) => toggleMobileNav(e, false));
+  }
+
+  // Close when clicking mobile nav links
+  if (mobileDrawer) {
     mobileDrawer.querySelectorAll('.mobile-nav-link').forEach(link => {
-      link.addEventListener('click', () => toggleDrawer(false));
-    });
-
-    // Close on desktop resize
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768 && mobileDrawer.classList.contains('active')) {
-        toggleDrawer(false);
-      }
+      link.addEventListener('click', () => toggleMobileNav(null, false));
     });
   }
+
+  // Close on Escape key press
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileDrawer && mobileDrawer.classList.contains('active')) {
+      toggleMobileNav(null, false);
+    }
+  });
+
+  // Close on desktop resize
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 992 && mobileDrawer && mobileDrawer.classList.contains('active')) {
+      toggleMobileNav(null, false);
+    }
+  });
 
   // 3. Highlight Current Page in Navigation
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';

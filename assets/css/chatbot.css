@@ -581,7 +581,8 @@
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    width: 100vw !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: 100vh !important;
     height: 100dvh !important;
     max-height: 100dvh !important;
@@ -591,11 +592,15 @@
     display: flex !important;
     flex-direction: column !important;
     transform: translateY(100%) !important;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s ease !important;
   }
 
   .chatbot-panel.active {
     transform: translateY(0) !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
   /* Pinned, opaque top header for mobile chat */
