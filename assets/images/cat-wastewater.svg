@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="wwGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D9488"/>
+      <stop offset="100%" stop-color="#044E46"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="54" fill="#CCFBF1" stroke="#99F6E4" stroke-width="2"/>
+  <!-- Treatment Tank & Bio-clarifier Agitator -->
+  <rect x="32" y="44" width="56" height="46" rx="6" fill="url(#wwGrad)"/>
+  <ellipse cx="60" cy="44" rx="28" ry="10" fill="#14B8A6"/>
+  <!-- Central Shaft & Blades -->
+  <line x1="60" y1="28" x2="60" y2="76" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 44 72 Q 60 80 76 72" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Bio Aeration bubbles -->
+  <circle cx="42" cy="58" r="3" fill="#A7F3D0"/>
+  <circle cx="76" cy="54" r="2.5" fill="#A7F3D0"/>
+  <circle cx="48" cy="48" r="2" fill="#E6FFFA"/>
+</svg>

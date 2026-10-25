@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="poolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#0E7490"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="54" fill="#CFFAFE" stroke="#A5F3FC" stroke-width="2"/>
+  <!-- Pool Waves and Ladder Steps -->
+  <path d="M 30 65 Q 45 55 60 65 T 90 65" stroke="url(#poolGrad)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M 30 78 Q 45 68 60 78 T 90 78" stroke="url(#poolGrad)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Pool Ladder Rails -->
+  <path d="M 44 32 L 44 65" stroke="#0E7490" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 58 32 L 58 65" stroke="#0E7490" stroke-width="3" stroke-linecap="round"/>
+  <line x1="44" y1="42" x2="58" y2="42" stroke="#0E7490" stroke-width="2.5"/>
+  <line x1="44" y1="52" x2="58" y2="52" stroke="#0E7490" stroke-width="2.5"/>
+</svg>
