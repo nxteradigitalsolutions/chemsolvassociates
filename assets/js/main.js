@@ -120,36 +120,124 @@
     fadeElements.forEach(el => el.classList.add('visible'));
   }, 600);
 
-  // 5. Products Category Nav Scroll Spy & Active State
+  // 5. Products Category Nav (Smooth Category Selection & Non-Intrusive ScrollSpy)
+  const categoryNavWrapper = document.querySelector('.category-nav-wrapper');
+  const categoryScroll = document.querySelector('.category-nav-scroll');
   const categoryPills = document.querySelectorAll('.category-pill');
-  if (categoryPills.length > 0) {
+
+  if (categoryPills.length > 0 && categoryScroll) {
+    let isUserClicking = false;
+    let clickTimeout = null;
+
+    // Helper to center the active pill strictly inside the horizontal scroll container without moving the window
+    function centerPillInNav(pill, smooth = true) {
+      if (!pill || !categoryScroll) return;
+      const scrollLeft = pill.offsetLeft - (categoryScroll.clientWidth / 2) + (pill.clientWidth / 2);
+      categoryScroll.scrollTo({
+        left: Math.max(0, scrollLeft),
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+    }
+
+    // Helper to toggle active class and center the pill in navigation
+    function setActivePill(targetHash, centerInNav = true, smoothNav = true) {
+      categoryPills.forEach(p => {
+        if (p.getAttribute('href') === targetHash) {
+          p.classList.add('active');
+          if (centerInNav) {
+            centerPillInNav(p, smoothNav);
+          }
+        } else {
+          p.classList.remove('active');
+        }
+      });
+    }
+
+    // Direct click handler for instant, reliable category selection
+    categoryPills.forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = pill.getAttribute('href').replace('#', '');
+        const targetSection = document.getElementById(targetId);
+        if (!targetSection) return;
+
+        // Set active immediately
+        setActivePill(`#${targetId}`, true, true);
+
+        // Calculate offset (site-header + category-nav-wrapper)
+        const headerEl = document.querySelector('.site-header');
+        const headerH = headerEl ? headerEl.offsetHeight : 70;
+        const navH = categoryNavWrapper ? categoryNavWrapper.offsetHeight : 50;
+        const totalOffset = headerH + navH + 12;
+
+        const targetTop = targetSection.getBoundingClientRect().top + window.pageYOffset - totalOffset;
+
+        // Temporarily pause scroll spy during programmatic smooth scroll
+        isUserClicking = true;
+        clearTimeout(clickTimeout);
+        clickTimeout = setTimeout(() => {
+          isUserClicking = false;
+        }, 900);
+
+        window.scrollTo({
+          top: Math.max(0, targetTop),
+          behavior: 'smooth'
+        });
+
+        // Update URL hash cleanly without default anchor jump
+        if (window.history && window.history.pushState) {
+          window.history.pushState(null, '', `#${targetId}`);
+        } else {
+          window.location.hash = `#${targetId}`;
+        }
+      });
+    });
+
+    // Handle initial hash on page load (e.g. landing from homepage category cards)
+    if (window.location.hash) {
+      const initialPill = Array.from(categoryPills).find(p => p.getAttribute('href') === window.location.hash);
+      if (initialPill) {
+        setTimeout(() => {
+          initialPill.click();
+        }, 200);
+      }
+    }
+
+    // ScrollSpy: highlight active pill as user scrolls naturally
     const sections = Array.from(categoryPills).map(pill => {
-      const targetId = pill.getAttribute('href').replace('#', '');
-      return document.getElementById(targetId);
+      const id = pill.getAttribute('href').replace('#', '');
+      return document.getElementById(id);
     }).filter(Boolean);
 
-    if (sections.length > 0 && 'IntersectionObserver' in window) {
-      const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const id = entry.target.id;
-            categoryPills.forEach(pill => {
-              if (pill.getAttribute('href') === `#${id}`) {
-                pill.classList.add('active');
-                // Center the active pill smoothly on mobile
-                pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-              } else {
-                pill.classList.remove('active');
-              }
-            });
-          }
-        });
-      }, {
-        threshold: 0.15,
-        rootMargin: '-70px 0px -40% 0px'
-      });
+    if (sections.length > 0) {
+      let scrollTimer = null;
+      window.addEventListener('scroll', () => {
+        if (isUserClicking) return; // Prevent interference during user click animation
+        
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          if (isUserClicking) return;
+          const headerEl = document.querySelector('.site-header');
+          const headerH = headerEl ? headerEl.offsetHeight : 70;
+          const navH = categoryNavWrapper ? categoryNavWrapper.offsetHeight : 50;
+          const triggerLine = window.pageYOffset + headerH + navH + 80;
 
-      sections.forEach(sec => sectionObserver.observe(sec));
+          // Find current section in view
+          let currentSection = sections[0];
+          for (let i = 0; i < sections.length; i++) {
+            const sec = sections[i];
+            if (sec.offsetTop <= triggerLine) {
+              currentSection = sec;
+            } else {
+              break;
+            }
+          }
+
+          if (currentSection) {
+            setActivePill(`#${currentSection.id}`, true, true);
+          }
+        }, 40);
+      }, { passive: true });
     }
   }
 

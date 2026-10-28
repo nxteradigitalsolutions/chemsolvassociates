@@ -76,7 +76,7 @@ html {
   -webkit-text-size-adjust: 100%;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -87,7 +87,7 @@ body {
   background-color: var(--color-bg);
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -563,10 +563,15 @@ textarea:focus-visible {
   border: 1px solid transparent;
   transition: all var(--transition-normal);
   text-decoration: none;
-  white-space: nowrap;
-  line-height: 1.4;
+  white-space: normal;
+  text-align: center;
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-height: 1.35;
   touch-action: manipulation;
   min-height: 46px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .btn-primary {
@@ -644,6 +649,12 @@ textarea:focus-visible {
   padding: 0.95rem 2rem;
   font-size: 1.05rem;
   min-height: 50px;
+  max-width: 100%;
+}
+
+.cta-full-btn {
+  display: inline-flex;
+  max-width: 100%;
 }
 
 /* ==========================================================================
@@ -1066,10 +1077,35 @@ textarea:focus-visible {
     width: 100% !important;
   }
 
-  /* Full-width responsive CTAs */
-  .section-dark .btn {
+  /* Full-width responsive CTAs & all buttons */
+  .btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.925rem;
+    min-height: 44px;
+    max-width: 100%;
+  }
+
+  .btn-lg {
+    padding: 0.85rem 1.35rem;
+    font-size: 0.95rem;
+    min-height: 48px;
+    line-height: 1.35;
+    max-width: 100%;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.825rem;
+    min-height: 38px;
+  }
+
+  .section-dark .btn,
+  .cta-full-btn,
+  .fade-in-up > .btn-lg,
+  div[style*="text-align: center"] > .btn-lg {
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
   }
 
   .footer-grid {
@@ -1093,6 +1129,11 @@ textarea:focus-visible {
 @media (max-width: 480px) {
   :root {
     --container-padding: 1rem;
+  }
+
+  .btn-lg {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
   }
 
   .section {
